@@ -50,9 +50,29 @@ class ReservationForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Display result.
+
     foreach ($form_state->getValues() as $key => $value) {
         drupal_set_message($key . ': ' . $value);
     }
+
+    $reservation = \Drupal\node\Entity\Node::create([
+      'type' => 'booking',
+      'status' => 1
+    ]);
+
+    $reservation->set('field_client',\Drupal::currentUser()->id());
+    $reservation->set('field_book',$form_state->getValue('book_id'));
+    $reservation->set('title','reservation');
+
+    $reservation->save();
+    if ($reservation->save()){
+      drupal_set_message('Votre réservation fut bien prise en charge');
+    }
+
+    //$form_state->getValue('book_id');
+    //\Drupal::currentUser()->id();
+    //kint($form_state->getValue('book_id'));die();
+
 
   }
 
